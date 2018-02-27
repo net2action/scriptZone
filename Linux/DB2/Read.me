@@ -1,0 +1,85 @@
+#-----------------------------------------------------------------------
+# DB2 collection scripts
+#
+# Author : Andrea Fontana  mail: a.fontana@net2action.com
+#
+# blog: http://razioni-k.net2action.com
+#
+#-----------------------------------------------------------------------
+
+In this collection you can find some script to help you to survive at technologies :-)
+my plan is release all script for Linux: Ubuntu, RedHat, Suse and if possible for Winzoz
+
+ **** today all script are tested on Ubuntu 14.04 LTS ****
+ 
+db2Setup.sh  
+
+this scirpit install your DB2 server, to doing it, you must 
+
+a) download Db2Packages
+b) extract it in temp directory
+c) if you use different version of 10.5 you must prepare your response file as my response sample
+   [db2eseV10.1.rsp] and put it in template directory, the suffix "V10.5" identify DB2 version
+   and it's a parameter to run script
+d) run script like as:
+
+   ./db2Setup.sh -v V10.5 -x P4ssw0rd -p /media/sf_Passport/Packages/LIX64/db2.10.5.03/server_r
+   
+   the script accept following parameters:
+   
+  ./db2Setup.sh  [-i db2Admin] -v version id (V10.1 V10.5) -p packPath -x password -h homePath [-l licPath] [-dx (y/n)] [-s hostName]
+   
+  db2Admin : Db2 owner for working directory, default is db2inst1
+  db2pwd   : Password of Db2 owner, default is P4ssw0rd
+  homePath : Directory where will be install DB2, default is /opt
+  licPath  : Full path to Db2 license file
+  version  : V10.1 o V10.5
+  packPath : complete path where we can find db2Setup command , default is db2inst1
+             eg: /media/sf_share/LIX64/db2.10.5.03/server_r
+  dx       : yes or no (y/n) if "y" all Standarda db for Digital Experience 8.5 will be created 
+  hostName : your FQDN for DB2 Server, defulat value is dbstore.ondemand.com
+  
+  parameter between [] are optional
+
+             
+  to install DB2, activate license and create standard databse for Digital Experience you can run:           
+  ./db2Setup.sh -v V10.5 -i db2inst1 -x P4ssw0rd -p /media/sf_LIX64/db2.10.5.03/server_r/ -l /media/sf_LIX64/db2.10.5.03/db2ese_u.lic -dx y
+  
+  if you see following message during setup
+  
+  Requirement not matched for DB2 database "Server" . Version: "10.5.0.3". 
+  Summary of prerequisites that are not met on the current system: 
+  DBT3514W  The db2prereqcheck utility failed to find the following 32-bit library file: "/lib/libpam.so*". 
+
+  it's normal DB2 works find, but if you use a 32bit client you must install this library.
+      
+ db2CreateDXdb.sh
+ 
+ this script create e preset all db for Digital Experience 8.5
+ a) download Db2Packages
+ b) extract it in temp directory
+ c) if DB2 already install you can run script directly, otherwise install DB2 before
+ d) run script like as:
+ 
+ ./db2CreateDxDB.sh -db2Admin db2inst1 -password P4ssw0rd -dbList relDBName=wpsdbp:comDbName=wpsdbp:custDbName=wpsdbp:jcrDbName=jcrDbp:lmDbName=lkmdbp:fdbkDbName=fdbkdbp
+ 
+ where 
+ db2Admin is your DB2 Administrator
+ password his password
+ dbList is list of db you want create by defualt following schema will be consolidate
+ 
+Release        to wpsdb
+Community      to wpsdb
+Customization  to wpsdb
+JCR 	          to jcrdb
+Feedback 	     to fdbkdb
+Likeminds      to lkmdb
+
+but you can choose differente aggragation schema-database
+you must populate dbList paramiters with appropiate value separated by [:]
+like:
+
+-dbList relDBName=wpsdbp:comDbName=wpsdbp:custDbName=wpsdbp:jcrDbName=jcrDbp:lmDbName=lkmdbp:fdbkDbName=fdbkdbp
+ 
+      
+  * -----------------------------------------------------------------------------------------------*    
