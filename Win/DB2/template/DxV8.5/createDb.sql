@@ -1,5 +1,5 @@
 #------------------------------------------------
-# this script create DX Db via streaming command
+# this script create DX Db via streaming command  
 # Author: AF - 2016-03-26
 # Owner: Net2Action
 #------------------------------------------------
