@@ -79,9 +79,13 @@ export logFile=$log.log
 echo > $logFile
 msgLine "Start Setup process: $(date)" 
 
+# ----- setting defualt
 homeDb=/opt
 db2Instance=db2inst1
 db2Pwd=P4ssw0rd
+bckPath=/backup
+db2Admin=db2inst1
+alPath=/archiveLogs
 
 # Parse the command-line arguments
 while [ "$#" -gt "0" ]; do
