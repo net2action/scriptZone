@@ -41,7 +41,7 @@ function usageScript
   echo "| Program : ${PROGNAME} ${VERSION}"
   echo "| ========================== "
   echo "| ${PROGNAME}  [-i db2Admin] -v version id (V10.1 V10.5) -p packPath"
-  echo "| -x password -h homePath [-l licPath] [-dx (y/n)] [-s hostName]"
+  echo "| -x password -h homePath [-l licPath] [-dx (y/n)] [-s hostName] -a alPath -b bckPath"
   echo "|"
   echo "| db2Admin : Db2 owner for working directory, default is db2inst1"
   echo "| db2pwd   : Password of Db2 owner, default is P4ssw0rd"
@@ -51,6 +51,8 @@ function usageScript
   echo "| hostName : your FQDN for DB2 Server, defulat value is dbstore.ondemand.com"
   echo "| packPath : complete path where we can find db2Setup command , default is db2inst1"
   echo "|            eg: /media/sf_share/LIX64/db2.10.5.03/server_r"
+  echo "| alPath   : Archive Log path, default is /archiveLogs"
+  echo "| bckPath  : Backup path, default is /backups/<InstanceName>"  
   echo "*----------------------------------------------------------------------------------"
 }
 
@@ -59,6 +61,10 @@ function getOs {
    osCurrent=$(echo $listaOs | tr '"' "." | cut -d "." -f 2  )
    if [ "$osCurrent" == "Ubuntu" ]; then
       os="Ubt"
+   fi    
+   
+   if [ "$osCurrent" == "CentOS Linux" ]; then
+      os="100"
    fi    
 
    if [ "$DEBUG" == "True" ]; then
@@ -112,6 +118,14 @@ while [ "$#" -gt "0" ]; do
      version="$2"
       shift 2
     ;;       
+	-a)
+      alPath="$2"
+      shift 2
+    ;;    
+	-b)
+      bckPath="$2"
+      shift 2
+    ;;
     -?|--help)
       usageScript
     exit 0
@@ -139,10 +153,10 @@ fi
 $homeDir/bin/createUsersGroup${os}.sh -p ${db2Pwd}
 rc=$?
 if [ ${rc} -eq 0 ] ; then
-   $homeDir/bin/presetDb2Env${os}.sh
+   $homeDir/bin/presetDb2Env${os}.sh -i ${db2Instance} -b ${bckPath} -a ${alPath}
    rc=$?
    if [ ${rc} -eq 0 ] ; then
-      $homeDir/bin/setHost${os}.sh $hostName
+      $homeDir/bin/setHost${os}.sh -f ${hostName}
       rc=$?
       if [ ${rc} -eq 0 ] ; then
          $homeDir/bin/updateKernel${os}.sh
